@@ -145,9 +145,7 @@ x, a_x = np.linspace(-Lx, Lx, num=Nx, endpoint=False, retstep=True)
 side_kx = np.pi / a_x
 kx, delta_kx = np.linspace(-(2 * (Nx - 1) / float(Nx) - 1) * side_kx, side_kx, num=Nx, retstep=True)
 
-
 KX, KY = np.meshgrid(kx, ky)
-
 
 Nt = 2048
 dxsav_sp = 1.
@@ -439,8 +437,8 @@ fig_low_pass.savefig('fig_GP_low_pass', bbox_inches='tight')
 
 ###
 fig_high_pass_s, ax = plt.subplots(1, 1, figsize=(5, 5))
-ax.imshow(high_pass_spc[0, idx_yb_in:idx_yt_in, idx_xl_in:idx_xr_in],
-                 cmap=cm.binary, origin='lower',
+ax.imshow(np.clip(high_pass_spc[0, idx_yb_in:idx_yt_in, idx_xl_in:idx_xr_in], -0.2, 0.2),
+                 cmap=cm.gray, origin='lower',
                  extent=np.array([x[idx_xl_in], x[idx_xr_in],
                      y[idx_yb_in], y[idx_yt_in]]) * lC)
 #ax.scatter(x_def * lC, y_def * lC, s=50, c=u'orange', marker=u'o')
@@ -576,7 +574,7 @@ ax.scatter(momentum_spi[2, 0] / lC, momentum_spi[2, 1] / lC, c=color_spi[2], mar
 ax.scatter(shifted_dot_coords[2, 0] / lC, shifted_dot_coords[2, 1] / lC, c=color_spi[2], marker=u'o', s=100)
 
 ax.set_ylabel(ky_label)
-ax.set_xlabel(kx_label)
+ax.set_xlabel(r'$k_x-k_n[\mu m^{-1}]$')
 ax.yaxis.set_label_position("right")
 ax.yaxis.tick_right()
 ax.xaxis.set_ticks(np.arange(-4, 5, 2))
