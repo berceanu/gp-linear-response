@@ -69,6 +69,7 @@ ky_label = r'$k_y[\mu m^{-1}]$'
 
 titles = ['signal', 'pump', 'idler']
 color_spi = ['blue', 'red', 'green']
+marker_spi = ['^', 'o', 'v']                                                                                                                           
 
 def find_index(dist_or_mom, side, delta):
     return int(np.around((side + dist_or_mom) / delta))
@@ -203,7 +204,7 @@ fig_int_spect, ax = plt.subplots(1, 1, figsize=(5, 5))
 for idx in range(3):
     ax.scatter(omega[idx_spi[idx]] * Omega_R * 10 ** 3,
             spect_int[idx_spi[idx]], c=color_spi[idx],
-            marker=u'o', s=100)
+            marker=marker_spi[idx], s=100)
 ax.plot(omega * Omega_R * 10 ** 3, spect_int, 'black')
 ax.set_xlim(-3, +3)
 ax.set_xlim(ax.get_xlim()[::-1])
@@ -227,7 +228,7 @@ ax.imshow(np.clip(np.log10(spect), -6, 1), cmap=cm.binary, origin='lower',
               omega[0] * Omega_R * 10 ** 3, omega[-1] * Omega_R * 10 ** 3])
 
 for idx in range(3):
-    ax.scatter(momentum_spi[idx, 0] / lC, energy_spi[idx] * Omega_R * 10 ** 3, c=color_spi[idx], marker=u'o', s=60)
+    ax.scatter(momentum_spi[idx, 0] / lC, energy_spi[idx] * Omega_R * 10 ** 3, c=color_spi[idx], marker=marker_spi[idx], s=60)
 
 ax.plot(KX[Ny / 2, :] / lC, UP[Ny / 2, :] - omega_X * 10 ** 3, 'k-.')
 
@@ -520,14 +521,20 @@ print mom / lC  # extracted momenta, in mu^(-1)
 dot_coords = np.transpose(np.vstack((mom * np.cos(angle), mom * np.sin(angle))))
 shifted_dot_coords = momentum_spi + dot_coords
 
+bottom = find_index(-3.5, side_kx/lC, delta_kx/lC)
+top = find_index(3.5, side_kx/lC, delta_kx/lC)
+
+left = find_index(momentum_spi[0,0]/lC-3.5, side_kx/lC, delta_kx/lC)
+right = find_index(momentum_spi[0,0]/lC+3.5, side_kx/lC, delta_kx/lC)
+
 fig_data_mom_s, ax = plt.subplots(1, 1, figsize=(5, 5))
-ax.imshow(np.clip(np.log10(data_mom[0, ...]), -7, 1),
+ax.imshow(np.clip(np.log10(data_mom[0,bottom:top,left:right]), -7, 1),
                  cmap=cm.gray, origin='lower',
-                 extent=np.array([kx[0], kx[-1], ky[0], ky[-1]]) / lC)
+                 extent=np.array([-3.5, 3.5, -3.5, 3.5]))
 #ax.set_title(titles[0])
 
-ax.scatter(momentum_spi[0, 0] / lC, momentum_spi[0, 1] / lC, c=color_spi[0], marker=u'o', s=100)
-ax.scatter(shifted_dot_coords[0, 0] / lC, shifted_dot_coords[0, 1] / lC, c=color_spi[0], marker=u'o', s=100)
+ax.scatter(0, 0, c=color_spi[0], marker=marker_spi[idx], s=100)
+ax.scatter(dot_coords[0, 0] / lC, 0, c=color_spi[0], marker=marker_spi[idx], s=100)
 
 ax.set_ylabel(ky_label)
 ax.yaxis.set_label_position("right")
@@ -537,19 +544,21 @@ ax.yaxis.set_ticks(np.arange(-4, 5, 2))
 #ax.set_xlabel(kx_label)
 ax.set_xticklabels([])
 #ax.set_xlim(momentum_spi[0, 0] / lC - 3.5, momentum_spi[0, 0] / lC + 3.5)
-ax.set_xlim(-6, 6)
-ax.set_ylim(-6, 6)
+ax.set_xlim(-3.5, 3.5)
+ax.set_ylim(-3.5, 3.5)
 fig_data_mom_s.savefig('fig_GP_data_mom_s', bbox_inches='tight')
 
+left = find_index(momentum_spi[1,0]/lC-3.5, side_kx/lC, delta_kx/lC)
+right = find_index(momentum_spi[1,0]/lC+3.5, side_kx/lC, delta_kx/lC)
 
 fig_data_mom_p, ax = plt.subplots(1, 1, figsize=(5, 5))
-ax.imshow(np.clip(np.log10(data_mom[1, ...]), -7, 1),
+ax.imshow(np.clip(np.log10(data_mom[1, bottom:top,left:right]), -7, 1),
                  cmap=cm.gray, origin='lower',
-                 extent=np.array([kx[0], kx[-1], ky[0], ky[-1]]) / lC)
+                 extent=np.array([-3.5, 3.5, -3.5, 3.5]))
 #ax.set_title(titles[0])
 
-ax.scatter(momentum_spi[1, 0] / lC, momentum_spi[1, 1] / lC, c=color_spi[1], marker=u'o', s=100)
-ax.scatter(shifted_dot_coords[1, 0] / lC, shifted_dot_coords[1, 1] / lC, c=color_spi[1], marker=u'o', s=100)
+ax.scatter(0, 0, c=color_spi[1], marker=marker_spi[idx], s=100)
+ax.scatter(dot_coords[1, 0] / lC, 0, c=color_spi[1], marker=marker_spi[idx], s=100)
 
 ax.set_ylabel(ky_label)
 ax.yaxis.set_label_position("right")
@@ -559,19 +568,21 @@ ax.yaxis.set_ticks(np.arange(-4, 5, 2))
 #ax.set_xlabel(kx_label)
 ax.set_xticklabels([])
 #ax.set_xlim(momentum_spi[1, 0] / lC - 3.5, momentum_spi[1, 0] / lC + 3.5)
-ax.set_xlim(-6, 6)
-ax.set_ylim(-6, 6)
+ax.set_xlim(-3.5, 3.5)
+ax.set_ylim(-3.5, 3.5)
 fig_data_mom_p.savefig('fig_GP_data_mom_p', bbox_inches='tight')
 
+left = find_index(momentum_spi[2,0]/lC-3.5, side_kx/lC, delta_kx/lC)
+right = find_index(momentum_spi[2,0]/lC+3.5, side_kx/lC, delta_kx/lC)
 
 fig_data_mom_i, ax = plt.subplots(1, 1, figsize=(5, 5))
-ax.imshow(np.clip(np.log10(data_mom[2, ...]), -7, 1),
+ax.imshow(np.clip(np.log10(data_mom[2, bottom:top,left:right]), -7, 1),
                  cmap=cm.gray, origin='lower',
-                 extent=np.array([kx[0], kx[-1], ky[0], ky[-1]]) / lC)
+                 extent=np.array([-3.5, 3.5, -3.5, 3.5]))
 #ax.set_title(titles[0])
 
-ax.scatter(momentum_spi[2, 0] / lC, momentum_spi[2, 1] / lC, c=color_spi[2], marker=u'o', s=100)
-ax.scatter(shifted_dot_coords[2, 0] / lC, shifted_dot_coords[2, 1] / lC, c=color_spi[2], marker=u'o', s=100)
+ax.scatter(0, 0, c=color_spi[2], marker=marker_spi[idx], s=100)
+ax.scatter(dot_coords[2, 0] / lC, 0, c=color_spi[2], marker=marker_spi[idx], s=100)
 
 ax.set_ylabel(ky_label)
 ax.set_xlabel(r'$k_x-k_n[\mu m^{-1}]$')
@@ -579,7 +590,7 @@ ax.yaxis.set_label_position("right")
 ax.yaxis.tick_right()
 ax.xaxis.set_ticks(np.arange(-4, 5, 2))
 ax.yaxis.set_ticks(np.arange(-4, 5, 2))
-ax.set_xlim(-6, 6)
-ax.set_ylim(-6, 6)
+ax.set_xlim(-3.5, 3.5)
+ax.set_ylim(-3.5, 3.5)
 #ax.set_xlim(momentum_spi[2, 0] / lC - 3.5, momentum_spi[2, 0] / lC + 3.)
 fig_data_mom_i.savefig('fig_GP_data_mom_i', bbox_inches='tight')
