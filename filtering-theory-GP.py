@@ -4,11 +4,9 @@ import scipy.ndimage as scimg
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
-import ipdb
 from matplotlib.patches import Rectangle
 #import string
 
-#ipdb.set_trace()
 
 lC = 0.868
 
@@ -168,8 +166,8 @@ def find_index(dist_or_mom, side, delta):
     return int(np.around((side + dist_or_mom) / delta))
 
 
-base = '/home/berceanu/ownCloud/Dropbox/'
-folder = r'GP_data/OPO/tophat/defect/kp/1.4/fp/0.11/N/256/move_defect/spectrum_2048/'
+base = '/home/berceanu/Development/'
+folder = r'runge-kutta-opo/opo/tophat/defect/'
 
 path_s = base + folder + r'opo_ph-spc_enfilt_signal.dat'
 path_p = base + folder + r'opo_ph-spc_enfilt_pump.dat'
