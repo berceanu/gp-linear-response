@@ -4,7 +4,7 @@ import scipy.ndimage as scimg
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
-from matplotlib.patches import Rectangle
+#from matplotlib.patches import Rectangle
 #import string
 
 
@@ -303,14 +303,15 @@ ax.imshow(data[0, idx_yb:idx_yt, idx_xl:idx_xr],
 #ax.set_title(titles[0])
 ax.set_ylabel(y_label)
 ax.yaxis.set_ticks(np.arange(-10, 11, 5))
+ax.xaxis.set_ticks([0, 5, 10, 15, 20])
 #ax.set_xlabel(x_label)
 ax.set_xticklabels([])
 ax.set_xlim(lC * x[idx_xl], lC * x[idx_xr])
 ax.set_ylim(lC * y[idx_yb], lC * y[idx_yt])
 # rectangle with lower left at (x, y)
-ax.add_patch(Rectangle((x[idx_xl_in], y[idx_yb_in]),
-    x[idx_xr_in] - x[idx_xl_in],
-    y[idx_yt_in] - y[idx_yb_in], fill=False))
+#ax.add_patch(Rectangle((x[idx_xl_in], y[idx_yb_in]),
+    #x[idx_xr_in] - x[idx_xl_in],
+    #y[idx_yt_in] - y[idx_yb_in], fill=False))
 fig_data_cut_s.savefig('fig_GP_data_cut_s', bbox_inches='tight')
 ####
 
@@ -325,6 +326,7 @@ ax.axis('image')
 
 ax.set_ylabel(y_label)
 ax.yaxis.set_ticks(np.arange(-10, 11, 5))
+ax.xaxis.set_ticks([0, 5, 10, 15, 20])
 #ax.set_xlabel(x_label)
 ax.set_xticklabels([])
 ax.set_xlim(lC * x[idx_xl], lC * x[idx_xr])
@@ -343,6 +345,7 @@ ax.axis('image')
 
 ax.set_ylabel(y_label)
 ax.yaxis.set_ticks(np.arange(-10, 11, 5))
+ax.xaxis.set_ticks([0, 5, 10, 15, 20])
 ax.set_xlabel(x_label)
 #ax.set_xticklabels([])
 ax.set_xlim(lC * x[idx_xl], lC * x[idx_xr])
@@ -435,6 +438,8 @@ for ax in range(3):
     axes[ax].set_xlim(lC * x[idx_xl], lC * x[idx_xr])
     axes[ax].set_ylim(lC * y[idx_yb], lC * y[idx_yt])
 fig_low_pass.savefig('fig_GP_low_pass', bbox_inches='tight')
+
+print np.array([idx_xl_in, idx_xr_in, idx_yb_in, idx_yt_in])
 
 ###
 fig_high_pass_s, ax = plt.subplots(1, 1, figsize=(5, 5))
