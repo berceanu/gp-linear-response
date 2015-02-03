@@ -658,7 +658,7 @@ xloc = plt.MaxNLocator(6)
 ax.yaxis.set_major_locator(yloc)
 ax.xaxis.set_major_locator(xloc)
 ax.set_ylim(0,60)
-ax.set_ylabel(r'$|\psi_C(x,y=0,\omega_n)|^2$')
+ax.set_ylabel(r'$\frac{\Omega_R}{2g_X}|\psi_C(x,y=0,\omega_s)|^2\,[\mu m^{-2}]$')
 
 ax.set_xticklabels([])
 ax.set_xlim(lC * x[idx_xl], lC * x[idx_xr])
@@ -678,7 +678,8 @@ xloc = plt.MaxNLocator(6)
 ax.yaxis.set_major_locator(yloc)
 ax.xaxis.set_major_locator(xloc)
 ax.set_ylim(0,70)
-ax.set_ylabel(r'$|\psi_C(x,y=0,\omega_n)|^2$')
+ax.set_ylabel(r'$\frac{\Omega_R}{2g_X}|\psi_C(x,y=0,\omega_p)|^2\,[\mu m^{-2}]$')
+
 
 ax.set_xticklabels([])
 ax.set_xlim(lC * x[idx_xl], lC * x[idx_xr])
@@ -699,7 +700,7 @@ ax.yaxis.set_major_locator(yloc)
 ax.xaxis.set_major_locator(xloc)
 
 ax.set_ylim(0,1)
-ax.set_ylabel(r'$|\psi_C(x,y=0,\omega_n)|^2$')
+ax.set_ylabel(r'$\frac{\Omega_R}{2g_X}|\psi_C(x,y=0,\omega_i)|^2\,[\mu m^{-2}]$')
 
 ax.set_xlim(lC * x[idx_xl], lC * x[idx_xr])
 ax.set_xlabel(x_label)
