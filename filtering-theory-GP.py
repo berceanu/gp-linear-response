@@ -6,6 +6,9 @@ import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 #from matplotlib.patches import Rectangle
 #import string
+# for colorbar stuff
+from mpl_toolkits.axes_grid1 import make_axes_locatable
+from matplotlib import ticker
 
 
 lC = 0.868
@@ -57,15 +60,15 @@ gp = gamma(k_pmpx, k_pmpy)
 
 print enLP(k_sigx, k_sigy) + enLP(2 * k_pmpx - k_sigx, 2 * k_pmpy - k_sigy) - 2 * enLP(k_pmpx, k_pmpy)
 
-mpl.rcParams.update({'font.size': 22, 'font.family': 'serif'})
+mpl.rcParams.update({'font.size': 26, 'font.family': 'serif'})
 
 phi_golden = 1.618  # golden ratio
-x_label = r'$x[\mu m]$'
-y_label = r'$y[\mu m]$'
-cut_label = r'$r [\mu m]$'
+x_label = r'$x\,[\mu m]$'
+y_label = r'$y\,[\mu m]$'
+cut_label = r'$r\,[\mu m]$'
 
-kx_label = r'$k_x[\mu m^{-1}]$'
-ky_label = r'$k_y[\mu m^{-1}]$'
+kx_label = r'$k_x\,[\mu m^{-1}]$'
+ky_label = r'$k_y\,[\mu m^{-1}]$'
 
 titles = ['signal', 'pump', 'idler']
 color_spi = ['blue', 'red', 'green']
@@ -172,6 +175,11 @@ path_s = base + folder + r'opo_ph-spc_enfilt_signal.dat'
 path_p = base + folder + r'opo_ph-spc_enfilt_pump.dat'
 path_i = base + folder + r'opo_ph-spc_enfilt_idler.dat'
 
+base_nodef = '/home/berceanu/data/OPO/tophat/no_defect/kp/1.4/fp/0.11/N/256/spectrum_2048/'
+path_s_nodef = base_nodef + r'opo_ph-spc_enfilt_signal.dat'
+path_p_nodef = base_nodef + r'opo_ph-spc_enfilt_pump.dat'
+path_i_nodef = base_nodef + r'opo_ph-spc_enfilt_idler.dat'
+
 path_s_mom = base + folder + r'opo_ph-mom_enfilt_signal.dat'
 path_p_mom = base + folder + r'opo_ph-mom_enfilt_pump.dat'
 path_i_mom = base + folder + r'opo_ph-mom_enfilt_idler.dat'
@@ -183,6 +191,11 @@ data_s = np.loadtxt(path_s, usecols=(2,))
 data_p = np.loadtxt(path_p, usecols=(2,))
 data_i = np.loadtxt(path_i, usecols=(2,))
 
+data_s_nodef = np.loadtxt(path_s_nodef, usecols=(2,))
+data_p_nodef = np.loadtxt(path_p_nodef, usecols=(2,))
+data_i_nodef = np.loadtxt(path_i_nodef, usecols=(2,))
+
+
 data_s_mom = np.loadtxt(path_s_mom, usecols=(2,))
 data_p_mom = np.loadtxt(path_p_mom, usecols=(2,))
 data_i_mom = np.loadtxt(path_i_mom, usecols=(2,))
@@ -191,8 +204,10 @@ data_spect = np.loadtxt(path_spect, usecols=(2,))
 data_spect_int = np.loadtxt(path_spect_int, usecols=(1,))
 
 data = np.array([data_s, data_p, data_i])
+data_nodef = np.array([data_s_nodef, data_p_nodef, data_i_nodef])
 data_mom = np.array([data_s_mom, data_p_mom, data_i_mom])
 data.shape = ((-1, Ny, Nx))
+data_nodef.shape = ((-1, Ny, Nx))
 data_mom.shape = ((-1, Ny, Nx))
 data_spect.shape = ((Nt, Nx))
 
@@ -269,7 +284,8 @@ x_def = x[idx_def_x_pos]
 y_def = y[idx_def_y_pos]
 
 
-side = 15. / lC  # half-side of square centered on defect
+#side = 15. / lC  # half-side of square centered on defect
+side = 35. / lC  # half-side of square centered on defect
 side_in = 7. / lC
 
 xl = x_def - side
@@ -294,7 +310,7 @@ idx_yt_in = find_index(yt_in, Ly, a_y)
 
 ###
 fig_data_cut_s, ax = plt.subplots(1, 1, figsize=(5, 5))
-ax.imshow(data[0, idx_yb:idx_yt, idx_xl:idx_xr],
+im = ax.imshow(data[0, idx_yb:idx_yt, idx_xl:idx_xr],
                  cmap=cm.gray, origin='lower',
                  extent=lC * np.array([x[idx_xl], x[idx_xr],
                      y[idx_yb], y[idx_yt]]))
@@ -312,13 +328,22 @@ ax.set_ylim(lC * y[idx_yb], lC * y[idx_yt])
 #ax.add_patch(Rectangle((x[idx_xl_in], y[idx_yb_in]),
     #x[idx_xr_in] - x[idx_xl_in],
     #y[idx_yt_in] - y[idx_yb_in], fill=False))
-fig_data_cut_s.savefig('fig_GP_data_cut_s', bbox_inches='tight')
-####
 
-###
+divider = make_axes_locatable(ax)
+cax = divider.append_axes("right", size="5%", pad=0.05)
+
+ticks_at = np.linspace(np.amin(data[0, idx_yb:idx_yt, idx_xl:idx_xr]),
+                       np.amax(data[0, idx_yb:idx_yt, idx_xl:idx_xr]), 5) 
+cb = fig_data_cut_s.colorbar(im, cax=cax, ticks=ticks_at, format='%1.2f')
+cb.ax.tick_params(labelsize=20)
+
+
+fig_data_cut_s.savefig('fig_GP_data_cut_s', bbox_inches='tight')
+
+
 fig_data_cut_p, ax = plt.subplots(1, 1, figsize=(5, 5))
 
-ax.imshow(data[1, idx_yb:idx_yt, idx_xl:idx_xr],
+im = ax.imshow(data[1, idx_yb:idx_yt, idx_xl:idx_xr],
                  cmap=cm.gray, origin='lower', extent=lC * np.array([x[idx_xl], x[idx_xr], y[idx_yb], y[idx_yt]]))
 #ax.scatter(lC * x_def, lC * y_def, s=50, c=u'orange', marker=u'o')
 ax.axis('image')
@@ -331,13 +356,23 @@ ax.xaxis.set_ticks([0, 5, 10, 15, 20])
 ax.set_xticklabels([])
 ax.set_xlim(lC * x[idx_xl], lC * x[idx_xr])
 ax.set_ylim(lC * y[idx_yb], lC * y[idx_yt])
+
+divider = make_axes_locatable(ax)
+cax = divider.append_axes("right", size="5%", pad=0.05)
+
+ticks_at = np.linspace(np.amin(data[1, idx_yb:idx_yt, idx_xl:idx_xr]),
+                       np.amax(data[1, idx_yb:idx_yt, idx_xl:idx_xr]), 5) 
+cb = fig_data_cut_p.colorbar(im, cax=cax, ticks=ticks_at, format='%1.2f')
+cb.ax.tick_params(labelsize=20)
+
+
 fig_data_cut_p.savefig('fig_GP_data_cut_p', bbox_inches='tight')
 ####
 
 ###
 fig_data_cut_i, ax = plt.subplots(1, 1, figsize=(5, 5))
 
-ax.imshow(data[2, idx_yb:idx_yt, idx_xl:idx_xr],
+im = ax.imshow(data[2, idx_yb:idx_yt, idx_xl:idx_xr],
                  cmap=cm.gray, origin='lower', extent=lC * np.array([x[idx_xl], x[idx_xr], y[idx_yb], y[idx_yt]]))
 #ax.scatter(lC * x_def, lC * y_def, s=50, c=u'orange', marker=u'o')
 ax.axis('image')
@@ -350,6 +385,16 @@ ax.set_xlabel(x_label)
 #ax.set_xticklabels([])
 ax.set_xlim(lC * x[idx_xl], lC * x[idx_xr])
 ax.set_ylim(lC * y[idx_yb], lC * y[idx_yt])
+
+divider = make_axes_locatable(ax)
+cax = divider.append_axes("right", size="5%", pad=0.05)
+
+ticks_at = np.linspace(np.amin(data[2, idx_yb:idx_yt, idx_xl:idx_xr]),
+                       np.amax(data[2, idx_yb:idx_yt, idx_xl:idx_xr]), 5) 
+cb = fig_data_cut_i.colorbar(im, cax=cax, ticks=ticks_at, format='%1.2f')
+cb.ax.tick_params(labelsize=20)
+
+
 fig_data_cut_i.savefig('fig_GP_data_cut_i', bbox_inches='tight')
 ####
 
@@ -538,8 +583,8 @@ ax.imshow(np.clip(np.log10(data_mom[0,bottom:top,left:right]), -7, 1),
                  extent=np.array([-3.5, 3.5, -3.5, 3.5]))
 #ax.set_title(titles[0])
 
-ax.scatter(0, 0, c=color_spi[0], marker=marker_spi[idx], s=100)
-ax.scatter(dot_coords[0, 0] / lC, 0, c=color_spi[0], marker=marker_spi[idx], s=100)
+ax.scatter(0, 0, c=color_spi[0], marker=marker_spi[0], s=100)
+ax.scatter(dot_coords[0, 0] / lC, 0, c=color_spi[0], marker=marker_spi[0], s=100)
 
 ax.set_ylabel(ky_label)
 ax.yaxis.set_label_position("right")
@@ -562,8 +607,8 @@ ax.imshow(np.clip(np.log10(data_mom[1, bottom:top,left:right]), -7, 1),
                  extent=np.array([-3.5, 3.5, -3.5, 3.5]))
 #ax.set_title(titles[0])
 
-ax.scatter(0, 0, c=color_spi[1], marker=marker_spi[idx], s=100)
-ax.scatter(dot_coords[1, 0] / lC, 0, c=color_spi[1], marker=marker_spi[idx], s=100)
+ax.scatter(0, 0, c=color_spi[1], marker=marker_spi[1], s=100)
+ax.scatter(dot_coords[1, 0] / lC, 0, c=color_spi[1], marker=marker_spi[1], s=100)
 
 ax.set_ylabel(ky_label)
 ax.yaxis.set_label_position("right")
@@ -586,11 +631,11 @@ ax.imshow(np.clip(np.log10(data_mom[2, bottom:top,left:right]), -7, 1),
                  extent=np.array([-3.5, 3.5, -3.5, 3.5]))
 #ax.set_title(titles[0])
 
-ax.scatter(0, 0, c=color_spi[2], marker=marker_spi[idx], s=100)
-ax.scatter(dot_coords[2, 0] / lC, 0, c=color_spi[2], marker=marker_spi[idx], s=100)
+ax.scatter(0, 0, c=color_spi[2], marker=marker_spi[2], s=100)
+ax.scatter(dot_coords[2, 0] / lC, 0, c=color_spi[2], marker=marker_spi[2], s=100)
 
 ax.set_ylabel(ky_label)
-ax.set_xlabel(r'$k_x-k_n[\mu m^{-1}]$')
+ax.set_xlabel(r'$k_x-k_n\,[\mu m^{-1}]$')
 ax.yaxis.set_label_position("right")
 ax.yaxis.tick_right()
 ax.xaxis.set_ticks(np.arange(-4, 5, 2))
@@ -599,3 +644,66 @@ ax.set_xlim(-3.5, 3.5)
 ax.set_ylim(-3.5, 3.5)
 #ax.set_xlim(momentum_spi[2, 0] / lC - 3.5, momentum_spi[2, 0] / lC + 3.)
 fig_data_mom_i.savefig('fig_GP_data_mom_i', bbox_inches='tight')
+
+##########
+fig_range_s, ax = plt.subplots(1, 1, figsize=(6*phi_golden, 6))
+ax.plot(lC*x[idx_xl:idx_xr], data[0, Ny/2, idx_xl:idx_xr],
+        linestyle='-', color='k', linewidth=3.0, label='defect')
+ax.plot(lC*x[idx_xl:idx_xr], data_nodef[0, Ny/2, idx_xl:idx_xr],
+        linestyle='--', color='k', linewidth=3.0, label='no defect')
+ax.axvline(x=lC*x_def, color='black', ls=':')
+
+yloc = plt.MaxNLocator(6)
+xloc = plt.MaxNLocator(6)
+ax.yaxis.set_major_locator(yloc)
+ax.xaxis.set_major_locator(xloc)
+ax.set_ylim(0,60)
+ax.set_ylabel(r'$|\psi_C(x,y=0,\omega_n)|^2$')
+
+ax.set_xticklabels([])
+ax.set_xlim(lC * x[idx_xl], lC * x[idx_xr])
+
+fig_range_s.savefig('fig_GP_range_s', bbox_inches='tight')
+
+##########
+fig_range_p, ax = plt.subplots(1, 1, figsize=(6*phi_golden, 6))
+ax.plot(lC*x[idx_xl:idx_xr], data[1, Ny/2, idx_xl:idx_xr],
+        linestyle='-', color='k', linewidth=3.0, label='defect')
+ax.plot(lC*x[idx_xl:idx_xr], data_nodef[1, Ny/2, idx_xl:idx_xr],
+        linestyle='--', color='k', linewidth=3.0, label='no defect')
+ax.axvline(x=lC*x_def, color='black', ls=':')
+
+yloc = plt.MaxNLocator(6)
+xloc = plt.MaxNLocator(6)
+ax.yaxis.set_major_locator(yloc)
+ax.xaxis.set_major_locator(xloc)
+ax.set_ylim(0,70)
+ax.set_ylabel(r'$|\psi_C(x,y=0,\omega_n)|^2$')
+
+ax.set_xticklabels([])
+ax.set_xlim(lC * x[idx_xl], lC * x[idx_xr])
+
+fig_range_p.savefig('fig_GP_range_p', bbox_inches='tight')
+
+##########
+fig_range_i, ax = plt.subplots(1, 1, figsize=(6*phi_golden, 6))
+ax.plot(lC*x[idx_xl:idx_xr], data[2, Ny/2, idx_xl:idx_xr],
+        linestyle='-', color='k', linewidth=3.0, label='defect')
+ax.plot(lC*x[idx_xl:idx_xr], data_nodef[2, Ny/2, idx_xl:idx_xr],
+        linestyle='--', color='k', linewidth=3.0, label='no defect')
+ax.axvline(x=lC*x_def, color='black', ls=':')
+
+yloc = plt.MaxNLocator(6)
+xloc = plt.MaxNLocator(6)
+ax.yaxis.set_major_locator(yloc)
+ax.xaxis.set_major_locator(xloc)
+
+ax.set_ylim(0,1)
+ax.set_ylabel(r'$|\psi_C(x,y=0,\omega_n)|^2$')
+
+ax.set_xlim(lC * x[idx_xl], lC * x[idx_xr])
+ax.set_xlabel(x_label)
+plt.legend(prop={'size':18})
+
+fig_range_i.savefig('fig_GP_range_i', bbox_inches='tight')
+

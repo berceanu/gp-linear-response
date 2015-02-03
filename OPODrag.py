@@ -398,11 +398,9 @@ eigs = eigL_mats(matsL, nkx, nky)
 
 
 matsL_diag = np.copy(matsL)
-
 matsL_diag[:, indices_si_rows, indices_si_cols] = complex(0, 0)
 matsL_diag[:, indices_ps_rows, indices_ps_cols] = complex(0, 0)
 matsL_diag[:, indices_pi_rows, indices_pi_cols] = complex(0, 0)
-
 eigs_diag = eigL_mats(matsL_diag, nkx, nky)
 
 
