@@ -1,40 +1,6 @@
-* AnacondaDocker                       :python
+# `phcpy` installation instructions
 
-
-Install instructions [[file:/home/berceanu/temp/Org/here|https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/#install-using-the-repository.org][here|https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/#install-using-the-repository]].
-
-```
-sudo apt remove docker docker-engine docker.io
-sudo apt update
-sudo apt-get install apt-transport-https ca-certificates curl software-properties-common
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-sudo apt-key fingerprint 0EBFCD88
-sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-sudo apt update
-apt-cache madison docker-ce
-sudo apt install docker-ce=17.03.2~ce-0~ubuntu-xenial
-sudo docker run hello-world
-sudo groupadd docker
-sudo usermod -aG docker $USER
-docker run hello-world
-sudo systemctl enable docker
-docker pull continuumio/anaconda3:4.4.0
-docker run -i -t continuumio/anaconda3:4.4.0 /bin/bash
-docker run -i -t -p 8888:8888 continuumio/anaconda3:4.4.0 /bin/bash -c "mkdir /opt/notebooks && /opt/conda/bin/jupyter notebook --notebook-dir=/opt/notebooks --ip='*' --port=8888 --no-browser --allow-root"
-```
-
-
-```
-docker ps -a
-docker rm <ID>
-docker images -a
-docker rmi <ID>
-docker volume ls
-docker volume prune
-```
-
-
-```
+```console
 sudo apt update
 sudo apt install curl build-essential
 cd ~/Downloads/
@@ -75,4 +41,3 @@ python setup.py install (installs in /home/berceanu/anaconda3/envs/phcpy/lib/pyt
 cd phcpy
 python examples.py
 ```
-
