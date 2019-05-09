@@ -1,4 +1,4 @@
-# `phcpy` installation instructions
+# `PHCpy` installation instructions
 
 ```console
 # install the Anaconda Python Distribution from https://www.anaconda.com/distribution/#download-section
