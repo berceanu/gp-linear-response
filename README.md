@@ -13,14 +13,14 @@ tar zxvf qd.tar.gz
 cd qd-2.3.17
 ./configure CXX=/usr/bin/g++ CXXFLAGS="-fPIC -O3"
 make
-sudo make install (installs in /usr/local/lib)
+sudo make install # (installs in /usr/local/lib)
 
 # install the GNAT ADA compiler
 cd ~/Downloads/
 curl -L "http://mirrors.cdn.adacore.com/art/591c6d80c7a447af2deed1d7" > gnat-gpl.tar.gz
 tar zxvf gnat-gpl.tar.gz
 cd gnat-gpl-2017-x86_64-linux-bin/
-sudo ./doinstall (installs in /usr/gnat)
+sudo ./doinstall # (installs in /usr/gnat)
 sed -i '$ a\PATH="/usr/gnat/bin:$PATH"; export PATH' ~/.bashrc
 source ~/.bashrc
 
@@ -37,7 +37,8 @@ make clean
 make phcpy2c3.so
 cd ../Python/PHCpy3
 conda activate phcpy
-python setup.py install (installs in ~/anaconda3/envs/phcpy/lib/python3.7/site-packages/phcpy)
+python setup.py install # (installs in ~/anaconda3/envs/phcpy/lib/python3.7/site-packages/phcpy)
+# test installation
 cd phcpy
 python examples.py
 ```
