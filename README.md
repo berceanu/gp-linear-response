@@ -41,4 +41,7 @@ python setup.py install # (installs in ~/anaconda3/envs/phcpy/lib/python3.7/site
 # test installation
 cd phcpy
 python examples.py
+
+# to run the code, do
+python opodrag.py ks0.0
 ```
