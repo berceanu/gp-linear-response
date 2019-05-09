@@ -2,18 +2,18 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 from scipy import optimize
-import phcpy2c as phc
-import ConfigParser
+import phcpy.phcpy2c3 as phc
+import configparser
 
 def read_parameters(filename):
-    config = ConfigParser.RawConfigParser()
+    config = configparser.RawConfigParser()
     try:
         config.readfp(open(filename))
     except IOError:
         raise IOError('cannot find parameters.ini, exiting')
     return config
 
-param = read_parameters("/home/berceanu/Envs/env-ipython/notebooks/parameters.ini")
+param = read_parameters("./parameters.ini")
 #param_set = "ks-0.4"
 param_set = "ks0.0"
 #param_set = "ks0.7"
@@ -450,4 +450,4 @@ axes[0].set_xlabel(x_label_i)
 axes[1].set_xlabel(x_label_i)
 plt.close(fig_real_I)
 
-print 'done!'
+print('done!')
