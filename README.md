@@ -44,4 +44,5 @@ python examples.py
 
 # to run the code, do
 python opodrag.py ks0.0
+# output will be `fig_real_ks_0_000_p.png`
 ```
